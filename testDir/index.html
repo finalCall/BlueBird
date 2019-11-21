@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <script src="./node_modules/web3/dist/web3.min.js"></script>
+
+</head>
+<body>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+       // Modified later on
+
+		if (typeof web3 !== 'undefined') {
+   			web3 = new Web3(window.ethereum);
+    		ethereum.enable();
+		}
+		else {    
+			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        
+        var CoursetroContract = web3.eth.contract([
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getMessage",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "newMessage",
+          "type": "string"
+        }
+      ],
+      "name": "setMessage",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]);
+
+	var Coursetro = CoursetroContract.at('0x7b0cA48606226ff8f05f5ED81C0E70bC55d3ab0e');
+
+    console.log(Coursetro);
+//-----------------------ADDED LINES-------------------------
+    Coursetro.getMessage((err, res)=>{
+        if(res){
+            console.log(res);
+        }
+        else{
+            console.log(err);
+        }
+    });
+
+    Coursetro.setMessage("myName",(err, res)=>{
+        if(err){
+            console.log("!!!!");
+        }
+    });
+
+    Coursetro.getMessage((err, res)=>{
+        if(res){
+            console.log(res);
+        }
+        else{
+            console.log(err);
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////
+/*    var instructorEvent = Coursetro.instructorInfo({}, 'latest');
+
+    instructorEvent.watch((error, result)=>{
+        if(!error){
+			console.log(result);
+			if(result.blockHash != $("#insTrans").html())
+				$("#loader").hide();
+				
+			$("#insTrans").html('Block hash : ' + result.blockHash);
+            $("#instructor").html(web3.toAscii(result.args.fName)+ ' ' + web3.toAscii(result.args.lName) + '(' + result.args.age + ' years old)');
+        }
+        else{
+            $("#loader").hide();
+            console.log(error);
+        }
+        //console.log(result);
+    });
+
+	Coursetro.countInstructors((err, res) => {
+		if(res){
+			//$("#countIns").html(res.c + ' Instructors');
+			console.log(res);
+		}
+	});
+
+    $("button").click(()=>{
+        Coursetro.setInstructor(web3.eth.defaultAccount, $("#age").val(),$("#fName").val(), $("#lName").val(), (err, res)=>{
+            if(err){
+				console.log(err);
+                $("#loader").hide();
+                //console.log("you cannot change the values. Only Owner can");
+            }
+        });
+        $("#loader").show();
+    });
+*/
+    </script>
+
+</body>
+</html>
