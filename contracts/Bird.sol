@@ -4,19 +4,13 @@ contract bird{
     int24 infi = int24(-1);
     uint orderID = 0;
     mapping(uint => address payable) droneAddress;
-    address a1 = droneAddress[0];
-    address a2 = droneAddress[1];
-    address a3 = droneAddress[2];
-    address a4 = droneAddress[3];
-    address a5 = droneAddress[4];
-    address a6 = droneAddress[5];
     /*
-    a1 = '';
-    a2 = '';
-    a3 = '';
-    a4 = '';
-    a5 = '';
-    a6 = '';
+    droneAddress[0] = ;
+    droneAddress[1] = ;
+    droneAddress[2] = ;
+    droneAddress[3] = ;
+    droneAddress[4] = ;
+    droneAddress[5] = ;
     */
     mapping(uint => uint[6]) paymentDue; // mapping from orderID to payment_due_to_each_drone
     //uint[] paymentOrderIDs;
@@ -50,17 +44,23 @@ contract bird{
 
     // function to update the Cost matrix and return an generated orderID
     uint cost = 1; // dummy cost for adding to payment_due_to_each_drone
-    function updateCostMatrix(uint[2][] memory pairs) public returns(uint){
+
+    function updateCostMatrix(uint[2][] memory pairs) public payable returns(uint){
         orderID++;
         uint arrLen = pairs.length;
         uint[6] memory tempPay;
+
+        for(uint i = 0; i<6; i++){
+            tempPay[i] = 0;
+        }
+
         for(uint i = 0; i<arrLen; i++){
             uint x = uint(pairs[i][0]);
             uint y = uint(pairs[i][1]);
             costArray[x][y] = int24(costArray[x][y]) + 300; // increasing price by 20%
             costArray[y][x] = int24(costArray[y][x]) + 300; // increasing price by 20%
             //Let's assume 'cost' is being added to due paymeny array for this transaction
-            tempPay[x] = cost;
+            tempPay[x] = uint(costArray[x][y]) - 300;
         }
         paymentDue[orderID] = tempPay;
         //paymentOrderIDs.push(orderID);
@@ -75,7 +75,6 @@ contract bird{
             }
         }
     }
-
     // Function to delete an orderID from paymentOrderIDs array;
     function deleteElement(uint _orderID) public{
         uint index = findIndex(paymentOrderIDs, _orderID);
@@ -87,6 +86,7 @@ contract bird{
         delete paymentOrderIDs[paymentOrderIDs.length-1];
         paymentOrderIDs.length--;
     }
+    */
     function delieveryComplete(uint _orderID, uint[2][] memory pairs) public returns(string memory){
         //deleteElement(_orderID);
         uint arrLen = pairs.length;
@@ -98,9 +98,10 @@ contract bird{
         }
         uint[6] memory temp = paymentDue[_orderID];
         for(uint i = 0; i<6; i++){
-            uint num = temp[i];
-
+            if(temp[i] != 0){
+                droneAddress[i].transfer(temp[i]);
+            }
         }
-        return "OK";
-    }*/
+        return "Ho gaya BC !!!";
+    }
 }

@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
-    <script src="./node_modules/web3/dist/web3.min.js"></script>
+    <script src="../node_modules/web3/dist/web3.min.js"></script>
 
 </head>
 <body>
@@ -30,12 +30,27 @@
     {
       "constant": true,
       "inputs": [],
-      "name": "getMessage",
+      "name": "getMatrixDistance",
       "outputs": [
         {
-          "internalType": "string",
+          "internalType": "int24[6][6]",
           "name": "",
-          "type": "string"
+          "type": "int24[6][6]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getMatrixCost",
+      "outputs": [
+        {
+          "internalType": "int24[6][6]",
+          "name": "",
+          "type": "int24[6][6]"
         }
       ],
       "payable": false,
@@ -46,24 +61,64 @@
       "constant": false,
       "inputs": [
         {
+          "internalType": "uint256[2][]",
+          "name": "pairs",
+          "type": "uint256[2][]"
+        }
+      ],
+      "name": "updateCostMatrix",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_orderID",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[2][]",
+          "name": "pairs",
+          "type": "uint256[2][]"
+        }
+      ],
+      "name": "delieveryComplete",
+      "outputs": [
+        {
           "internalType": "string",
-          "name": "newMessage",
+          "name": "",
           "type": "string"
         }
       ],
-      "name": "setMessage",
-      "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
     }
   ]);
 
-	var Coursetro = CoursetroContract.at('0x7b0cA48606226ff8f05f5ED81C0E70bC55d3ab0e');
+	var Coursetro = CoursetroContract.at('0x6eCa4cDe7AE2BE66f298763dD15247C66F15881C');
 
     console.log(Coursetro);
+    /*Coursetro.dummy({from: web3.eth.accounts[0], gas: 3000000, value: 10}, function(err, res){
+        if(res){
+            console.log(res);
+        }
+        else{
+            console.log(err);
+        }
+    });
 //-----------------------ADDED LINES-------------------------
-    Coursetro.getMessage((err, res)=>{
+    /*Coursetro.getMessage((err, res)=>{
         if(res){
             console.log(res);
         }
@@ -86,7 +141,7 @@
             console.log(err);
         }
     });
-
+*/
     //////////////////////////////////////////////////////////////////////
 /*    var instructorEvent = Coursetro.instructorInfo({}, 'latest');
 
