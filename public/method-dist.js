@@ -38,6 +38,13 @@ function dist_path() {
     var path = constructPath(shortestPathInfo, destcntr);
     path.unshift(srccntr);
 
+    var netcost2 = 0;
+    for(var i = 0;i<path.length-1;i++)
+    {
+      netcost2 += cost[path[i]][path[i+1]];
+    }
+
+    document.getElementById("p2").innerHTML = "Price: " + netcost2;
     //Printing Path
 
     var intervalId;

@@ -26,7 +26,14 @@ function cost_path() {
     var path = constructPath(shortestPathInfo, destcntr);
     //console.log(path)
     path.unshift(srccntr);
-    //console.log(path)
+    
+    var netcost1 = 0;
+    for(var i = 0;i<path.length-1;i++)
+    {
+      netcost1 += cost[path[i]][path[i+1]];
+    }
+
+    document.getElementById("p1").innerHTML = "Price: " + netcost1;
 
     //Printing Path
 

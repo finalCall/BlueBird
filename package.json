@@ -1,7 +1,6 @@
 {
   "name": "coursetro-eth",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,9 +9,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "web3": "^0.20.6"
+    "web3": "^0.20.7"
   },
   "devDependencies": {
     "lite-server": "^2.5.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/finalCall/BlueBird.git"
+  },
+  "bugs": {
+    "url": "https://github.com/finalCall/BlueBird/issues"
+  },
+  "homepage": "https://github.com/finalCall/BlueBird#readme",
+  "description": ""
 }
