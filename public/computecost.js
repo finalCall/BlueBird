@@ -75,11 +75,12 @@ function computecost() {
 map.on('click', computecost);
 
 var intervalId;
-var runcount = 0;
+var runcount ;
 var myMovingMarker = {};
 
 function PrintCostPath() {
     if (flag1 == 1 && flag2 == 1) {
+        runcount=0;
         function PrintPath() {
             if (runcount == (path1.length - 1)) {
                 clearInterval(intervalId)
@@ -89,7 +90,7 @@ function PrintCostPath() {
                     map.removeLayer(myMovingMarker);
                 }
                 myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[runcount]], wareHouseLong[path1[runcount]]], [wareHouseLat[path1[runcount + 1]], wareHouseLong[path1[runcount + 1]]]],
-                    [4000], { icon: droneIcon }).addTo(map);
+                    [4000], { icon: droneIcon }).addTo(map).bindPopup("<b>Package is On The Way!</b><br>").openPopup();
 
                 myMovingMarker.start();
             }
@@ -98,8 +99,10 @@ function PrintCostPath() {
                     map.removeLayer(myMovingMarker);
                 }
                 myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[(path1.length - 1)]], wareHouseLong[path1[(path1.length - 1)]]], [destinationLat, destinationLong]],
-                    [4000], { icon: packagedlvr }).addTo(map);
+                    [4000], { icon: packagedlvr }).addTo(map).bindPopup("<b>Package is Out For Delivery!</b><br>").openPopup();
                 myMovingMarker.start();
+                setTimeout(function(){ myMovingMarker.bindPopup("<b>Package Delivered!</b><br>").openPopup();}, 4000);
+
             }
             runcount++;
         }
@@ -118,6 +121,7 @@ cost_deliver.addEventListener('click', PrintCostPath);
 
 function PrintDistPath() {
     if (flag1 == 1 && flag2 == 1) {
+        runcount=0;
         function PrintPath() {
             if (runcount == (path2.length - 1)) {
                 clearInterval(intervalId)
@@ -127,7 +131,7 @@ function PrintDistPath() {
                     map.removeLayer(myMovingMarker);
                 }
                 myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path2[runcount]], wareHouseLong[path2[runcount]]], [wareHouseLat[path2[runcount + 1]], wareHouseLong[path2[runcount + 1]]]],
-                    [4000], { icon: droneIcon }).addTo(map);
+                    [4000], { icon: droneIcon }).addTo(map).bindPopup("<b>Package is On The Way!</b><br>").openPopup();
 
                 myMovingMarker.start();
             }
@@ -136,8 +140,10 @@ function PrintDistPath() {
                     map.removeLayer(myMovingMarker);
                 }
                 myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path2[(path2.length - 1)]], wareHouseLong[path2[(path2.length - 1)]]], [destinationLat, destinationLong]],
-                    [4000], { icon: packagedlvr }).addTo(map);
+                    [4000], { icon: packagedlvr }).addTo(map).bindPopup("<b>Package is Out For Delivery!</b><br>").openPopup();
                 myMovingMarker.start();
+                setTimeout(function(){ myMovingMarker.bindPopup("<b>Package Delivered!</b><br>").openPopup();}, 4000);
+
             }
             runcount++;
         }
