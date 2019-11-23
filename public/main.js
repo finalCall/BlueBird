@@ -1,4 +1,4 @@
-var map = L.map('mapid').setView([28.619608, 77.227002], 15);
+var map = L.map('mapid').setView([28.619608, 77.224002], 15);
 var src = document.querySelector("#src");
 var des = document.querySelector("#des");
 var dist_deliver = document.querySelector("#dist_deliver");
@@ -78,7 +78,7 @@ var droneHouseIcon = L.icon({
 	iconUrl: 'icons/distribution.svg',
 	//shadowUrl: 'leaf-shadow.png',
 
-	iconSize: [60, 120], // size of the icon
+	iconSize: [45, 120], // size of the icon
 	shadowSize: [50, 64], // size of the shadow
 	iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
 	shadowAnchor: [4, 62],  // the same for the shadow
