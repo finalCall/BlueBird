@@ -89,7 +89,7 @@ var CoursetroContract = web3.eth.contract([
   }
 ]);
 
-var Coursetro = CoursetroContract.at('0xEC48C08d85A1A98945E6E956da1342190489F076'); // to be updated later
+var Coursetro = CoursetroContract.at('0x829fe3bd7134dd4bCD1e9B94718D560ecED41226'); // to be updated later
 
 /*
 for(var i=0; i<6; i++){

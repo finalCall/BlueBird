@@ -55,6 +55,19 @@ function computecost() {
         for (var i = 0; i < path1.length - 1; i++) {
             netcost1 += cost[path1[i]][path1[i + 1]];
         }
+        if(document.getElementById("p3").checked)
+        {
+            netcost1+=path1.length*10
+        }
+        if (document.getElementById('p4').checked) {
+            netcost1+=path1.length*20
+        }
+        else if (document.getElementById('p5').checked) {
+            netcost1+=path1.length*30
+        }
+        else if (document.getElementById('p6').checked) {
+            netcost1+=path1.length*40
+        }
         document.getElementById("p1").innerHTML = "Price: " + netcost1;
 
             // Compute the shortest path on the basis of distance
@@ -67,7 +80,19 @@ function computecost() {
         for (var i = 0; i < path2.length - 1; i++) {
             netcost2 += cost[path2[i]][path2[i + 1]];
         }
-
+        if(document.getElementById("p3").checked)
+        {
+            netcost2+=path2.length*10
+        }
+        if (document.getElementById('p4').checked) {
+            netcost2+=path2.length*20
+        }
+        else if (document.getElementById('p5').checked) {
+            netcost2+=path2.length*30
+        }
+        else if (document.getElementById('p6').checked) {
+            netcost2+=path2.length*40
+        }
         document.getElementById("p2").innerHTML = "Price: " + netcost2;
 
     }
