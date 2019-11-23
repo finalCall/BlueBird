@@ -44,6 +44,7 @@ function fetchmatrix() {
 }
 function computecost() {
     if (flag1 == 1 && flag2 == 1) {
+        var costDelivery = [],distDelivery = [];
         var nearestcentres = nearcntr();
         srccntr = nearestcentres[0];
         destcntr = nearestcentres[1];
@@ -53,6 +54,12 @@ function computecost() {
         // Get the shortest path from vertex srccntr to vertex destcntr.
         path1[deliveryIndex] = constructPath(shortestPathInfo1, destcntr);
         path1[deliveryIndex].unshift(srccntr);
+        for(var i=1;i<path1[deliveryIndex].length;i++)
+        {
+            ///console.log("h")
+            costDelivery.push([path1[deliveryIndex][i-1],path1[deliveryIndex][i]])
+        }
+        //console.log(costDelivery)
         netcost1 = 0;
         for (var i = 0; i < path1[deliveryIndex].length - 1; i++) {
             netcost1 += cost[path1[deliveryIndex][i]][path1[deliveryIndex][i + 1]];
@@ -78,11 +85,16 @@ function computecost() {
         // Get the shortest path from vertex srccntr to vertex destcntr.
         path2[deliveryIndex] = constructPath(shortestPathInfo2, destcntr);
         path2[deliveryIndex].unshift(srccntr);
+        for(var i=1;i<path2[deliveryIndex].length;i++)
+        {
+            ///console.log("h")
+            distDelivery.push([path2[deliveryIndex][i-1],path2[deliveryIndex][i]])
+        }
+        //console.log(distDelivery)
         netcost2 = 0;
         for (var i = 0; i < path2[deliveryIndex].length - 1; i++) {
             netcost2 += cost[path2[deliveryIndex][i]][path2[deliveryIndex][i + 1]];
         }
-
         if(document.getElementById("p3").checked)
         {
             netcost2+=path2[deliveryIndex].length*10
@@ -105,6 +117,7 @@ document.getElementById("p3").addEventListener('change', computecost);
 document.getElementById("p4").addEventListener('change', computecost);
 document.getElementById("p5").addEventListener('change', computecost);
 document.getElementById("p6").addEventListener('change', computecost);
+
 
 
 function PrintCostPath(index, sourceLat, sourceLong, destinationLat, destinationLong) {
