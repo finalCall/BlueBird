@@ -13588,22 +13588,10 @@
       "links": {},
       "address": "0xEC48C08d85A1A98945E6E956da1342190489F076",
       "transactionHash": "0x9a7f29ce7dccd9d5881e213f53659574e534412fe7331ef0a2930102bfe48919"
-    },
-    "1574517677463": {
-      "events": {},
-      "links": {},
-      "address": "0x2394b09C547Ec06D7B1285d65424760b88f22627",
-      "transactionHash": "0x90540c6a3ce0228c7b850167d0a5cf990f2dd57297d467cf29bba47820f548aa"
-    },
-    "1574518417836": {
-      "events": {},
-      "links": {},
-      "address": "0x829fe3bd7134dd4bCD1e9B94718D560ecED41226",
-      "transactionHash": "0xf3a7dad250eaeadc98b44e1837729e31feaf247e85b3555d98365fc60703cad1"
     }
   },
   "schemaVersion": "3.0.19",
-  "updatedAt": "2019-11-23T14:14:08.041Z",
+  "updatedAt": "2019-11-23T09:38:09.807Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
