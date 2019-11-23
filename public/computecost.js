@@ -2,10 +2,12 @@ var _ = Infinity;
 
 var srccntr = 0;
 var destcntr = 0;
-var path1, path2, netcost1, netcost2;
+var path1 = [], path2 = [];
+var netcost1, netcost2;
+var deliveryIndex = 0;
 var cost = [];
 var distance = [];
-var myMovingMarker = {};
+// var myMovingMarker = {};
 function fetchmatrix() {
     Coursetro.getMatrixCost((err, res) => {
 
@@ -49,11 +51,11 @@ function computecost() {
         var shortestPathInfo1 = shortestPath(cost, 6, srccntr);
 
         // Get the shortest path from vertex srccntr to vertex destcntr.
-        path1 = constructPath(shortestPathInfo1, destcntr);
-        path1.unshift(srccntr);
+        path1[deliveryIndex] = constructPath(shortestPathInfo1, destcntr);
+        path1[deliveryIndex].unshift(srccntr);
         netcost1 = 0;
-        for (var i = 0; i < path1.length - 1; i++) {
-            netcost1 += cost[path1[i]][path1[i + 1]];
+        for (var i = 0; i < path1[deliveryIndex].length - 1; i++) {
+            netcost1 += cost[path1[deliveryIndex][i]][path1[deliveryIndex][i + 1]];
         }
         document.getElementById("p1").innerHTML = "Price: " + netcost1;
 
@@ -61,11 +63,11 @@ function computecost() {
         var shortestPathInfo2 = shortestPath(distance, 6, srccntr);
 
         // Get the shortest path from vertex srccntr to vertex destcntr.
-        path2 = constructPath(shortestPathInfo2, destcntr);
-        path2.unshift(srccntr);
+        path2[deliveryIndex] = constructPath(shortestPathInfo2, destcntr);
+        path2[deliveryIndex].unshift(srccntr);
         netcost2 = 0;
-        for (var i = 0; i < path2.length - 1; i++) {
-            netcost2 += cost[path2[i]][path2[i + 1]];
+        for (var i = 0; i < path2[deliveryIndex].length - 1; i++) {
+            netcost2 += cost[path2[deliveryIndex][i]][path2[deliveryIndex][i + 1]];
         }
 
         document.getElementById("p2").innerHTML = "Price: " + netcost2;
@@ -74,31 +76,32 @@ function computecost() {
 }
 map.on('click', computecost);
 
-var intervalId;
-var runcount;
 
-function PrintCostPath() {
+
+function PrintCostPath(index, sourceLat, sourceLong, destinationLat, destinationLong) {
+    var intervalId, runcount;
+    var myMovingMarker = {};
+
     if (flag1 == 1 && flag2 == 1) {
         runcount = 0;
         function PrintPath() {
-            if (runcount == (path1.length - 1)) {
+            if (runcount == (path1[index].length - 1)) {
                 clearInterval(intervalId)
             }
-            if (runcount != (path1.length - 1)) {
+            if (runcount != (path1[index].length - 1)) {
                 if (myMovingMarker != undefined) {
                     map.removeLayer(myMovingMarker);
                 }
-                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[runcount]], wareHouseLong[path1[runcount]]], [wareHouseLat[path1[runcount + 1]], wareHouseLong[path1[runcount + 1]]]],
-                    [4000], { icon: droneIcon }).addTo(map).bindPopup("<b>Package is On The Way!</b><br>").openPopup();
-
+                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[index][runcount]], wareHouseLong[path1[index][runcount]]], [wareHouseLat[path1[index][runcount + 1]], wareHouseLong[path1[index][runcount + 1]]]],
+                    [4000], { icon: droneIcon }).addTo(map);
                 myMovingMarker.start();
             }
             else {
                 if (myMovingMarker != undefined) {
                     map.removeLayer(myMovingMarker);
                 }
-                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[(path1.length - 1)]], wareHouseLong[path1[(path1.length - 1)]]], [destinationLat, destinationLong]],
-                    [4000], { icon: packagedlvr }).addTo(map).bindPopup("<b>Package is Out For Delivery!</b><br>").openPopup();
+                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[index][(path1[index].length - 1)]], wareHouseLong[path1[index][(path1[index].length - 1)]]], [destinationLat, destinationLong]],
+                    [4000], { icon: packagedlvr }).addTo(map);
                 myMovingMarker.start();
                 setTimeout(function () { myMovingMarker.bindPopup("<b>Package Delivered!</b><br>").openPopup(); }, 4000);
 
@@ -107,7 +110,7 @@ function PrintCostPath() {
         }
 
 
-        myMovingMarker = L.Marker.movingMarker([[sourceLat, sourceLong], [wareHouseLat[path1[0]], wareHouseLong[path1[0]]]],
+        myMovingMarker = L.Marker.movingMarker([[sourceLat, sourceLong], [wareHouseLat[path1[index][0]], wareHouseLong[path1[index][0]]]],
             [4000], { icon: packageacpt }).addTo(map);
         myMovingMarker.start();
 
@@ -115,22 +118,26 @@ function PrintCostPath() {
         
         curr = -1;
         flag1 = 0, flag2 = 0;
+        deliveryIndex++;
     }
 }
 
-function PrintDistPath() {
+function PrintDistPath(index, sourceLat, sourceLong, destinationLat, destinationLong) {
+    var intervalId, runcount;
+    var myMovingMarker = {};
+    
     if (flag1 == 1 && flag2 == 1) {
         runcount = 0;
         function PrintPath() {
-            if (runcount == (path2.length - 1)) {
+            if (runcount == (path2[index].length - 1)) {
                 clearInterval(intervalId)
             }
-            if (runcount != (path2.length - 1)) {
+            if (runcount != (path2[index].length - 1)) {
                 if (myMovingMarker != undefined) {
                     map.removeLayer(myMovingMarker);
                 }
-                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path2[runcount]], wareHouseLong[path2[runcount]]], [wareHouseLat[path2[runcount + 1]], wareHouseLong[path2[runcount + 1]]]],
-                    [4000], { icon: droneIcon }).addTo(map).bindPopup("<b>Package is On The Way!</b><br>").openPopup();
+                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path2[index][runcount]], wareHouseLong[path2[index][runcount]]], [wareHouseLat[path2[index][runcount + 1]], wareHouseLong[path2[index][runcount + 1]]]],
+                    [4000], { icon: droneIcon }).addTo(map);
 
                 myMovingMarker.start();
             }
@@ -138,8 +145,8 @@ function PrintDistPath() {
                 if (myMovingMarker != undefined) {
                     map.removeLayer(myMovingMarker);
                 }
-                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path2[(path2.length - 1)]], wareHouseLong[path2[(path2.length - 1)]]], [destinationLat, destinationLong]],
-                    [4000], { icon: packagedlvr }).addTo(map).bindPopup("<b>Package is Out For Delivery!</b><br>").openPopup();
+                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path2[index][(path2[index].length - 1)]], wareHouseLong[path2[index][(path2[index].length - 1)]]], [destinationLat, destinationLong]],
+                    [4000], { icon: packagedlvr }).addTo(map);
                 myMovingMarker.start();
                 setTimeout(function () { myMovingMarker.bindPopup("<b>Package Delivered!</b><br>").openPopup(); }, 4000);
 
@@ -147,16 +154,21 @@ function PrintDistPath() {
             runcount++;
         }
 
-        myMovingMarker = L.Marker.movingMarker([[sourceLat, sourceLong], [wareHouseLat[path2[0]], wareHouseLong[path2[0]]]],
+        myMovingMarker = L.Marker.movingMarker([[sourceLat, sourceLong], [wareHouseLat[path2[index][0]], wareHouseLong[path2[index][0]]]],
             [4000], { icon: packageacpt }).addTo(map);
         myMovingMarker.start();
 
         intervalId = setInterval(PrintPath, 4000)
         curr = -1;
         flag1 = 0, flag2 = 0;
+        deliveryIndex++;
     }
 }
 
-dist_deliver.addEventListener('click', PrintDistPath);
-cost_deliver.addEventListener('click', PrintCostPath);
+dist_deliver.addEventListener('click', () => {
+    PrintDistPath(deliveryIndex, sourceLat, sourceLong, destinationLat, destinationLong)
+});
+cost_deliver.addEventListener('click', () => {
+    PrintCostPath(deliveryIndex, sourceLat, sourceLong, destinationLat, destinationLong);
+});
 src.addEventListener('click', fetchmatrix);
