@@ -138,13 +138,11 @@ function getValues(e) {
 	if (curr == 0) { // for source
 		sourceLat = Number((e.latlng.lat).toFixed(4));
 		sourceLong = Number((e.latlng.lng).toFixed(4));
-
 		L.marker([sourceLat, sourceLong], { icon: sourceIcon }).addTo(map); // 
 	}
 	else if (curr == 1) { // for destination
 		destinationLat = Number((e.latlng.lat).toFixed(4));
 		destinationLong = Number((e.latlng.lng).toFixed(4));
-
 		L.marker([destinationLat, destinationLong], { icon: destinationIcon }).addTo(map); //
 	}
 
