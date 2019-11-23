@@ -57,6 +57,19 @@ function computecost() {
         for (var i = 0; i < path1[deliveryIndex].length - 1; i++) {
             netcost1 += cost[path1[deliveryIndex][i]][path1[deliveryIndex][i + 1]];
         }
+        if(document.getElementById("p3").checked)
+        {
+            netcost1+=path1[deliveryIndex].length*10
+        }
+        if (document.getElementById('p4').checked) {
+            netcost1+=path1[deliveryIndex].length*20
+        }
+        else if (document.getElementById('p5').checked) {
+            netcost1+=path1[deliveryIndex].length*30
+        }
+        else if (document.getElementById('p6').checked) {
+            netcost1+=path1[deliveryIndex].length*40
+        }
         document.getElementById("p1").innerHTML = "Price: " + netcost1;
 
             // Compute the shortest path on the basis of distance
@@ -70,12 +83,28 @@ function computecost() {
             netcost2 += cost[path2[deliveryIndex][i]][path2[deliveryIndex][i + 1]];
         }
 
+        if(document.getElementById("p3").checked)
+        {
+            netcost2+=path2[deliveryIndex].length*10
+        }
+        if (document.getElementById('p4').checked) {
+            netcost2+=path2[deliveryIndex].length*20
+        }
+        else if (document.getElementById('p5').checked) {
+            netcost2+=path2[deliveryIndex].length*30
+        }
+        else if (document.getElementById('p6').checked) {
+            netcost2+=path2[deliveryIndex].length*40
+        }
         document.getElementById("p2").innerHTML = "Price: " + netcost2;
 
     }
 }
 map.on('click', computecost);
-
+document.getElementById("p3").addEventListener('change', computecost);
+document.getElementById("p4").addEventListener('change', computecost);
+document.getElementById("p5").addEventListener('change', computecost);
+document.getElementById("p6").addEventListener('change', computecost);
 
 
 function PrintCostPath(index, sourceLat, sourceLong, destinationLat, destinationLong) {
