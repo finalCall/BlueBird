@@ -29,7 +29,10 @@ function computecost() {
         res.forEach(arr => {
             let row = [];
             arr.forEach(elem => {
-                row.push(elem.c[0]);
+                if(elem.c[0] == 1)
+                    row.push(_);
+                else
+                    row.push(elem.c[0]);
             })
             cost.push(row);
         });
@@ -42,7 +45,10 @@ function computecost() {
         res.forEach(arr => {
             let row = [];
             arr.forEach(elem => {
-                row.push(elem.c[0]);
+                if(elem.c[0] == 1)
+                    row.push(_);
+                else
+                    row.push(elem.c[0]);
             })
             distance.push(row);
         })

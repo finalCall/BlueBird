@@ -31,12 +31,12 @@ contract bird{
         [int(1702),int(3161),_,int(2730),int(1381),_]
     ];
 
-    int[6][6] costArray = [[_, int(500), int(1000), _, int(1500), int(900)],
-        [int(500), _, int(400), int(1500), _, int(300)],
-        [int(1000), int(400), _, int(1000), int(400), _],
-        [_, int(1500), int(1000), _, int(500), int(1500)],
-        [int(1500), _, int(400), int(500), _, int(500)],
-        [int(900), int(300), _, int(1500), int(500), _]
+    int[6][6] costArray = [[_, int(500), int(1500), _, int(1500), int(500)],
+        [int(500), _, int(500), int(1500), _, int(1500)],
+        [int(1500), int(500), _, int(500), int(1500), _],
+        [_, int(1500), int(500), _, int(500), int(1500)],
+        [int(1500), _, int(1500), int(500), _, int(500)],
+        [int(500), int(1500), _, int(1500), int(500), _]
     ];
 
     // function to fetch the updated Distance Array
@@ -80,12 +80,12 @@ contract bird{
             costArray[x][y] = int(costArray[x][y]) - 300; // decreasing price by 300
             costArray[y][x] = int(costArray[y][x]) - 300; // decreasing price by 300
         }
-        uint[6] memory temp = paymentDue[_orderID];
+        //uint[6] memory temp = paymentDue[_orderID];
         //for(uint i = 0; i<6; i++){
         //    if(temp[i] != 0){
         //        droneAddress[i].transfer(temp[i]);
         //    }
         //}
-        return "200_OK";
+        return "200OK";
     }
 }
