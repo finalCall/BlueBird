@@ -11,6 +11,7 @@
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="../node_modules/web3/dist/web3.min.js"></script>
         
     </head>
     
@@ -58,7 +59,7 @@
                 <div class="card mb-2">
                     <div class="card-body">
                         <h5 class="card-title">Economic Route</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Price: 1000</h6>
+                        <h6 class="card-subtitle mb-2 text-muted" id ="p1">Price: ?</h6>
                         <button id="cost_deliver" class="btn btn-outline-primary">Deliver!</button>
                     </div>
                 </div>
@@ -66,7 +67,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Express Route</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Price: 2500</h6>
+                        <h6 class="card-subtitle mb-2 text-muted" id = "p2">Price: ?</h6>
                         <button id="dist_deliver" class="btn btn-outline-primary">Deliver!</button>
                     </div>
                 </div>
@@ -86,8 +87,7 @@
         <script src="main.js"></script>
         <script src="nearcntr.js"></script>
         <script src="dijkstra.js"></script>
-        <script src="method-cost.js"></script>
-        <script src="method-dist.js"></script>
+        <script src="computecost.js"></script>
     </body>
     
     </html>
