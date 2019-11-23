@@ -7,6 +7,10 @@ else {
     web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 }
 
+var accountBox = document.getElementById("accounts");
+accountBox.addEventListener('change', () => {
+  web3.eth.defaultAccount = web3.eth.accounts[accountBox.value];
+})
 web3.eth.defaultAccount = web3.eth.accounts[0];
 
 var CoursetroContract = web3.eth.contract([
