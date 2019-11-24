@@ -12,7 +12,7 @@ contract bird{
     ];
 
     //mnemonics : board weasel tip physical alien charge exhaust exclude approve cabin frost excite
-    mapping(uint => uint[6]) paymentDue; // mapping from orderID to payment_due_to_each_drone
+    mapping(address => uint256[6]) paymentDue; // mapping from orderID to payment_due_to_each_drone
     //uint[] paymentOrderIDs;
 
     // array to be updated later
@@ -32,6 +32,10 @@ contract bird{
         [int(500), int(1500), _, int(1500), int(500), _]
     ];
 
+    // Events to place and release the orders
+    event orderPlaced(address addr);
+    event releaseAmount(address addr);
+
     // function to fetch the updated Distance Array
     function getMatrixDistance() public view returns(int[6][6] memory){
         return distanceArray;
@@ -43,8 +47,7 @@ contract bird{
     }
 
     // function to update the Cost matrix and return an generated orderID
-    function updateCostMatrix(uint[2][] memory pairs) public payable returns(uint){
-        orderID++;
+    function updateCostMatrix(uint[2][] memory pairs) public payable{
         uint arrLen = pairs.length;
         uint[6] memory tempPay;
 
@@ -59,12 +62,12 @@ contract bird{
             costArray[x][y] = int(costArray[x][y]) + 500; // increasing price by 300
             costArray[y][x] = int(costArray[y][x]) + 500; // increasing price by 300
         }
-        paymentDue[orderID] = tempPay;
+        paymentDue[msg.sender] = tempPay;
         //paymentOrderIDs.push(orderID);
-        return orderID;
+        emit orderPlaced(msg.sender);
     }
     //function to release the amount associated with the given
-    function deliveryComplete(uint _orderID, uint[2][] memory pairs) public returns(string memory){
+    function deliveryComplete(address _orderID, uint[2][] memory pairs) public payable{
         //deleteElement(_orderID);
         uint arrLen = pairs.length;
         for(uint i = 0; i<arrLen; i++){
@@ -73,12 +76,16 @@ contract bird{
             costArray[x][y] = int(costArray[x][y]) - 500; // decreasing price by 300
             costArray[y][x] = int(costArray[y][x]) - 500; // decreasing price by 300
         }
-        uint[6] memory temp = paymentDue[_orderID];
+        uint256[6] memory temp = paymentDue[_orderID];
         for(uint i = 0; i<6; i++){
             if(temp[i] != 0){
                 droneAddress[i].transfer(temp[i]);
             }
         }
-        return "200OK";
+        emit releaseAmount(_orderID);
+    }
+    //function to fetch the account details
+    function getAccountDetails() public view returns (address payable, uint256, uint256){
+        return (msg.sender, msg.sender.balance, address(this).balance);
     }
 }
