@@ -5,6 +5,7 @@ var destcntr = 0;
 var path1 = [], path2 = [], orderID = [];
 var netcost1, netcost2;
 var deliveryIndex = 0;
+// var afterDelivery = 0;
 var cost = [];
 var distance = [];
 var costDelivery = [],distDelivery = [];
@@ -125,96 +126,138 @@ function PrintCostPath(index, sourceLat, sourceLong, destinationLat, destination
     var intervalId, runcount;
     var myMovingMarker = {};
     if (flag1 == 1 && flag2 == 1) {
+        var addr;
         //Calling Function to update and place ethers in contract
-        Coursetro.updateCostMatrix(costDelivery,{from: web3.eth.defaultAccount, gas: 3000000, value: 10},(err, res)=>{
+        Coursetro.updateCostMatrix(distDelivery,{from: web3.eth.defaultAccount, gas: 3000000, value: 10},(err, res)=>{
             if(err) throw err;
-            orderID[deliveryIndex] = res;
-            console.log("result : " + res);
+            console.log("Transaction Hash Placed : " + res);
         });
-        runcount = 0;
-        function PrintPath() {
-            if (runcount == (path1[index].length - 1)) {
-                clearInterval(intervalId)
-            }
-            if (runcount != (path1[index].length - 1)) {
-                if (myMovingMarker != undefined) {
-                    map.removeLayer(myMovingMarker);
+        var orderPlacedEvent = Coursetro.orderPlaced({},'latest');
+        orderPlacedEvent.watch((err, res)=>{
+            if(err) throw err;
+            orderPlacedEvent.stopWatching(); // ******** to stop event listner from recursively emmitting result
+            runcount = 0;
+            addr = res.args.addr;
+            console.log("Delivery Placed Address : " + res.args.addr);
+            function PrintPath() {
+                if (runcount == (path1[index].length - 1)) {
+                    clearInterval(intervalId)
                 }
-                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[index][runcount]], wareHouseLong[path1[index][runcount]]], [wareHouseLat[path1[index][runcount + 1]], wareHouseLong[path1[index][runcount + 1]]]],
-                    [4000], { icon: droneIcon }).addTo(map);
-                myMovingMarker.start();
-            }
-            else {
-                if (myMovingMarker != undefined) {
-                    map.removeLayer(myMovingMarker);
+                if (runcount != (path1[index].length - 1)) {
+                    if (myMovingMarker != undefined) {
+                        map.removeLayer(myMovingMarker);
+                    }
+                    myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[index][runcount]], wareHouseLong[path1[index][runcount]]], [wareHouseLat[path1[index][runcount + 1]], wareHouseLong[path1[index][runcount + 1]]]],
+                        [4000], { icon: droneIcon }).addTo(map);
+                    myMovingMarker.start();
                 }
-                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[index][(path1[index].length - 1)]], wareHouseLong[path1[index][(path1[index].length - 1)]]], [destinationLat, destinationLong]],
-                    [4000], { icon: packagedlvr }).addTo(map);
-                myMovingMarker.start();
-                setTimeout(function () { myMovingMarker.bindPopup("<b>Package Delivered!</b><br>").openPopup();
-                    // function to release the ethers associated with this orderID
-                    Coursetro.deliveryComplete(orderID[deliveryIndex], costDelivery, (err, res) => {
-                        if(err) throw err;
-                        console.log(res);
-                    });
-                }, 4000);
+                else {
+                    if (myMovingMarker != undefined) {
+                        map.removeLayer(myMovingMarker);
+                    }
+                    myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[index][(path1[index].length - 1)]], wareHouseLong[path1[index][(path1[index].length - 1)]]], [destinationLat, destinationLong]],
+                        [4000], { icon: packagedlvr }).addTo(map);
+                    myMovingMarker.start();
+                    setTimeout(function () { myMovingMarker.bindPopup("<b>Package Delivered!</b><br>").openPopup();
+                        // function to release the ethers associated with this orderID
+                        console.log("Helo");
+                        Coursetro.deliveryComplete(addr, costDelivery,{from: web3.eth.defaultAccount, gas: 3000000}, (err, res) => {
+                            if(err) throw err;
+                            console.log("Del Complete transaction hash : " + res);
+                            //afterDelivery++;
+                        });
+                        var releaseAmount = Coursetro.releaseAmount({},'latest');
+                        releaseAmount.watch((err, res)=>{
+                            if(err) throw err;
+                            console.log("Del complete Address : " + res.args.addr);
+                            releaseAmount.stopWatching();   // ******** to stop event listner from recursively emmitting result
+                        });
+                    }, 4000);
+                }
+                runcount++;
             }
-            runcount++;
-        }
 
 
-        myMovingMarker = L.Marker.movingMarker([[sourceLat, sourceLong], [wareHouseLat[path1[index][0]], wareHouseLong[path1[index][0]]]],
-            [4000], { icon: packageacpt }).addTo(map);
-        myMovingMarker.start();
+            myMovingMarker = L.Marker.movingMarker([[sourceLat, sourceLong], [wareHouseLat[path1[index][0]], wareHouseLong[path1[index][0]]]],
+                [4000], { icon: packageacpt }).addTo(map);
+            myMovingMarker.start();
 
-        intervalId = setInterval(PrintPath, 4000)
-        
-        curr = -1;
-        flag1 = 0, flag2 = 0;
-        deliveryIndex++;
+            intervalId = setInterval(PrintPath, 4000)
+            
+            curr = -1;
+            flag1 = 0, flag2 = 0;
+            deliveryIndex++;
+        });
     }
 }
-
+// For Express Delivery
 function PrintDistPath(index, sourceLat, sourceLong, destinationLat, destinationLong) {
     var intervalId, runcount;
     var myMovingMarker = {};
     
     if (flag1 == 1 && flag2 == 1) {
-        runcount = 0;
-        function PrintPath() {
-            if (runcount == (path2[index].length - 1)) {
-                clearInterval(intervalId)
-            }
-            if (runcount != (path2[index].length - 1)) {
-                if (myMovingMarker != undefined) {
-                    map.removeLayer(myMovingMarker);
+        var addr;
+        //Calling Function to update and place ethers in contract
+        Coursetro.updateCostMatrix(distDelivery,{from: web3.eth.defaultAccount, gas: 3000000, value: 10},(err, res)=>{
+            if(err) throw err;
+            console.log("Transaction Hash Placed : " + res);
+        });
+        var orderPlacedEvent = Coursetro.orderPlaced({},'latest');
+        orderPlacedEvent.watch((err, res)=>{
+            if(err) throw err;
+            orderPlacedEvent.stopWatching();    // ******** to stop event listner from recursively emmitting result
+            runcount = 0;
+            addr = res.args.addr;
+            console.log("Delivery Placed Address : " + res.args.addr);
+            //console.log("Here comes result");
+            //console.log(res);
+            function PrintPath() {
+                if (runcount == (path2[index].length - 1)) {
+                    clearInterval(intervalId)
                 }
-                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path2[index][runcount]], wareHouseLong[path2[index][runcount]]], [wareHouseLat[path2[index][runcount + 1]], wareHouseLong[path2[index][runcount + 1]]]],
-                    [4000], { icon: droneIcon }).addTo(map);
+                if (runcount != (path2[index].length - 1)) {
+                    if (myMovingMarker != undefined) {
+                        map.removeLayer(myMovingMarker);
+                    }
+                    myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path2[index][runcount]], wareHouseLong[path2[index][runcount]]], [wareHouseLat[path2[index][runcount + 1]], wareHouseLong[path2[index][runcount + 1]]]],
+                        [4000], { icon: droneIcon }).addTo(map);
 
-                myMovingMarker.start();
-            }
-            else {
-                if (myMovingMarker != undefined) {
-                    map.removeLayer(myMovingMarker);
+                    myMovingMarker.start();
                 }
-                myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path2[index][(path2[index].length - 1)]], wareHouseLong[path2[index][(path2[index].length - 1)]]], [destinationLat, destinationLong]],
-                    [4000], { icon: packagedlvr }).addTo(map);
-                myMovingMarker.start();
-                setTimeout(function () { myMovingMarker.bindPopup("<b>Package Delivered!</b><br>").openPopup(); }, 4000);
+                else {
+                    if (myMovingMarker != undefined) {
+                        map.removeLayer(myMovingMarker);
+                    }
+                    myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path2[index][(path2[index].length - 1)]], wareHouseLong[path2[index][(path2[index].length - 1)]]], [destinationLat, destinationLong]],
+                        [4000], { icon: packagedlvr }).addTo(map);
+                    myMovingMarker.start();
+                    setTimeout(function () { myMovingMarker.bindPopup("<b>Package Delivered!</b><br>").openPopup(); 
+                        // function to release the ethers associated with this orderID
+                        Coursetro.deliveryComplete(addr, distDelivery,{from: web3.eth.defaultAccount, gas: 3000000}, (err, res) => {
+                            if(err) throw err;
+                            console.log("Del Complete transaction hash : " + res);
+                        });
+                        var releaseAmount = Coursetro.releaseAmount({},'latest');
+                        releaseAmount.watch((err, res)=>{
+                            if(err) throw err;
+                            console.log("Del complete Address : " + res.args.addr);
+                            releaseAmount.stopWatching();   // ******** to stop event listner from recursively emmitting result
+                        });
+                    }, 4000);
 
+                }
+                runcount++;
             }
-            runcount++;
-        }
 
-        myMovingMarker = L.Marker.movingMarker([[sourceLat, sourceLong], [wareHouseLat[path2[index][0]], wareHouseLong[path2[index][0]]]],
-            [4000], { icon: packageacpt }).addTo(map);
-        myMovingMarker.start();
+            myMovingMarker = L.Marker.movingMarker([[sourceLat, sourceLong], [wareHouseLat[path2[index][0]], wareHouseLong[path2[index][0]]]],
+                [4000], { icon: packageacpt }).addTo(map);
+            myMovingMarker.start();
 
-        intervalId = setInterval(PrintPath, 4000)
-        curr = -1;
-        flag1 = 0, flag2 = 0;
-        deliveryIndex++;
+            intervalId = setInterval(PrintPath, 4000)
+            curr = -1;
+            flag1 = 0, flag2 = 0;
+            deliveryIndex++;
+        });
     }
 }
 
