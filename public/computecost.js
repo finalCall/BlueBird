@@ -2,11 +2,13 @@ var _ = Infinity;
 
 var srccntr = 0;
 var destcntr = 0;
-var path1 = [], path2 = [];
+var path1 = [], path2 = [], orderID = [];
 var netcost1, netcost2;
 var deliveryIndex = 0;
 var cost = [];
 var distance = [];
+var costDelivery = [],distDelivery = [];
+
 // var myMovingMarker = {};
 function fetchmatrix() {
     Coursetro.getMatrixCost((err, res) => {
@@ -44,7 +46,6 @@ function fetchmatrix() {
 }
 function computecost() {
     if (flag1 == 1 && flag2 == 1) {
-        var costDelivery = [],distDelivery = [];
         var nearestcentres = nearcntr();
         srccntr = nearestcentres[0];
         destcntr = nearestcentres[1];
@@ -119,12 +120,17 @@ document.getElementById("p5").addEventListener('change', computecost);
 document.getElementById("p6").addEventListener('change', computecost);
 
 
-
+// Called Only when placed order with Economic option
 function PrintCostPath(index, sourceLat, sourceLong, destinationLat, destinationLong) {
     var intervalId, runcount;
     var myMovingMarker = {};
-
     if (flag1 == 1 && flag2 == 1) {
+        //Calling Function to update and place ethers in contract
+        Coursetro.updateCostMatrix(costDelivery,{from: web3.eth.defaultAccount, gas: 3000000, value: 10},(err, res)=>{
+            if(err) throw err;
+            orderID[deliveryIndex] = res;
+            console.log("result : " + res);
+        });
         runcount = 0;
         function PrintPath() {
             if (runcount == (path1[index].length - 1)) {
@@ -145,8 +151,13 @@ function PrintCostPath(index, sourceLat, sourceLong, destinationLat, destination
                 myMovingMarker = L.Marker.movingMarker([[wareHouseLat[path1[index][(path1[index].length - 1)]], wareHouseLong[path1[index][(path1[index].length - 1)]]], [destinationLat, destinationLong]],
                     [4000], { icon: packagedlvr }).addTo(map);
                 myMovingMarker.start();
-                setTimeout(function () { myMovingMarker.bindPopup("<b>Package Delivered!</b><br>").openPopup(); }, 4000);
-
+                setTimeout(function () { myMovingMarker.bindPopup("<b>Package Delivered!</b><br>").openPopup();
+                    // function to release the ethers associated with this orderID
+                    Coursetro.deliveryComplete(orderID[deliveryIndex], costDelivery, (err, res) => {
+                        if(err) throw err;
+                        console.log(res);
+                    });
+                }, 4000);
             }
             runcount++;
         }
@@ -208,7 +219,7 @@ function PrintDistPath(index, sourceLat, sourceLong, destinationLat, destination
 }
 
 dist_deliver.addEventListener('click', () => {
-    PrintDistPath(deliveryIndex, sourceLat, sourceLong, destinationLat, destinationLong)
+    PrintDistPath(deliveryIndex, sourceLat, sourceLong, destinationLat, destinationLong);
 });
 cost_deliver.addEventListener('click', () => {
     PrintCostPath(deliveryIndex, sourceLat, sourceLong, destinationLat, destinationLong);
