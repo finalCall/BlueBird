@@ -9,11 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "truffle": "^5.1.1",
+    "truffle": "^5.7.9",
     "web3": "^0.20.7"
   },
   "devDependencies": {
-    "lite-server": "^2.5.4"
+    "lite-server": "^2.6.1"
   },
   "repository": {
     "type": "git",
